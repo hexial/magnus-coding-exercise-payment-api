@@ -1,0 +1,582 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A payment API",
+        "version": "1.0.0",
+        "title": "Magnus Coding Exercise Payment API",
+        "contact": {
+            "email": "magnus@strombrink.com"
+        }
+    },
+    "host": "localhost",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "payments",
+            "description": "Payments",
+            "externalDocs": {
+                "description": "Find out more",
+                "url": "http://tbd"
+            }
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/payments": {
+            "get": {
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Payments for one organisation",
+                "description": "Returns a list of payments",
+                "operationId": "getPayments",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Payments"
+                        }
+                    },
+                    "404": {
+                        "description": "Organisation not found",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPIErrorObject"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Create payment",
+                "description": "Creates payment",
+                "operationId": "createPaymentId",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Payment object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PaymentInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPISuccessObject"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPIErrorObject"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/payments/{paymentId}": {
+            "get": {
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Find payment by ID",
+                "description": "Returns a single payment",
+                "operationId": "getPaymentById",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "paymentId",
+                        "in": "path",
+                        "description": "ID of payment to return",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Payment"
+                        }
+                    },
+                    "404": {
+                        "description": "Payment not found",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPIErrorObject"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Update payment",
+                "description": "Update payment",
+                "operationId": "updatePaymentId",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "paymentId",
+                        "in": "path",
+                        "description": "ID of payment to update",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Payment object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PaymentInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPISuccessObject"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPIErrorObject"
+                        }
+                    },
+                    "404": {
+                        "description": "Payment not found",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPIErrorObject"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Delete payment",
+                "description": "Delete payment",
+                "operationId": "deletePaymentId",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "paymentId",
+                        "in": "path",
+                        "description": "ID of payment to delete",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPISuccessObject"
+                        }
+                    },
+                    "404": {
+                        "description": "Payment not found",
+                        "schema": {
+                            "$ref": "#/definitions/JSONAPIErrorObject"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "Payments": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Payment"
+                    }
+                }
+            }
+        },
+        "links": {
+            "type": "object",
+            "properties": {
+                "self": {
+                    "type": "string"
+                }
+            }
+        },
+        "Payment": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                },
+                "organisation_id": {
+                    "type": "string"
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "amount": {
+                            "type": "string"
+                        },
+                        "beneficiary_party": {
+                            "$ref": "#/definitions/BeneficiaryParty"
+                        },
+                        "charges_information": {
+                            "type": "object",
+                            "properties": {
+                                "bearer_code": {
+                                    "type": "string"
+                                },
+                                "sender_charges": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Charge"
+                                    }
+                                },
+                                "receiver_charges_amount": {
+                                    "type": "string"
+                                },
+                                "receiver_charges_currency": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "currency": {
+                            "type": "string"
+                        },
+                        "debtor_party": {
+                            "$ref": "#/definitions/DebtorParty"
+                        },
+                        "end_to_end_reference": {
+                            "type": "string"
+                        },
+                        "fx": {
+                            "type": "object",
+                            "properties": {
+                                "contract_reference": {
+                                    "type": "string"
+                                },
+                                "exchange_rate": {
+                                    "type": "string"
+                                },
+                                "original_amount": {
+                                    "type": "string"
+                                },
+                                "original_currency": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "numeric_reference": {
+                            "type": "string"
+                        },
+                        "payment_id": {
+                            "type": "string"
+                        },
+                        "payment_purpose": {
+                            "type": "string"
+                        },
+                        "payment_scheme": {
+                            "type": "string"
+                        },
+                        "payment_type": {
+                            "type": "string"
+                        },
+                        "processing_date": {
+                            "type": "string"
+                        },
+                        "reference": {
+                            "type": "string"
+                        },
+                        "scheme_payment_sub_type": {
+                            "type": "string"
+                        },
+                        "scheme_payment_type": {
+                            "type": "string"
+                        },
+                        "sponsor_party": {
+                            "$ref": "#/definitions/SponsorParty"
+                        }
+                    }
+                }
+            }
+        },
+        "DebtorParty": {
+            "type": "object",
+            "properties": {
+                "account_name": {
+                    "type": "string"
+                },
+                "account_number": {
+                    "type": "string"
+                },
+                "account_number_code": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bank_id": {
+                    "type": "string"
+                },
+                "bank_id_code": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "BeneficiaryParty": {
+            "type": "object",
+            "properties": {
+                "account_name": {
+                    "type": "string"
+                },
+                "account_number": {
+                    "type": "string"
+                },
+                "account_number_code": {
+                    "type": "string"
+                },
+                "account_type": {
+                    "type": "integer"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bank_id": {
+                    "type": "string"
+                },
+                "bank_id_code": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "SponsorParty": {
+            "type": "object",
+            "properties": {
+                "account_number": {
+                    "type": "string"
+                },
+                "bank_id": {
+                    "type": "string"
+                },
+                "bank_id_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "Charge": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                }
+            }
+        },
+        "PaymentInput": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                },
+                "attributes": {
+                    "type": "object",
+                    "properties": {
+                        "amount": {
+                            "type": "string"
+                        },
+                        "beneficiary_party": {
+                            "$ref": "#/definitions/PartyInput"
+                        },
+                        "charges_information": {
+                            "type": "object",
+                            "properties": {
+                                "bearer_code": {
+                                    "type": "string"
+                                },
+                                "sender_charges": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Charge"
+                                    }
+                                },
+                                "receiver_charges_amount": {
+                                    "type": "string"
+                                },
+                                "receiver_charges_currency": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "currency": {
+                            "type": "string"
+                        },
+                        "debtor_party": {
+                            "$ref": "#/definitions/PartyInput"
+                        },
+                        "end_to_end_reference": {
+                            "type": "string"
+                        },
+                        "fx": {
+                            "type": "object",
+                            "properties": {
+                                "contract_reference": {
+                                    "type": "string"
+                                },
+                                "exchange_rate": {
+                                    "type": "string"
+                                },
+                                "original_amount": {
+                                    "type": "string"
+                                },
+                                "original_currency": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "numeric_reference": {
+                            "type": "string"
+                        },
+                        "payment_id": {
+                            "type": "string"
+                        },
+                        "payment_purpose": {
+                            "type": "string"
+                        },
+                        "payment_scheme": {
+                            "type": "string"
+                        },
+                        "payment_type": {
+                            "type": "string"
+                        },
+                        "processing_date": {
+                            "type": "string"
+                        },
+                        "reference": {
+                            "type": "string"
+                        },
+                        "scheme_payment_sub_type": {
+                            "type": "string"
+                        },
+                        "scheme_payment_type": {
+                            "type": "string"
+                        },
+                        "sponsor_party": {
+                            "$ref": "#/definitions/PartyInput"
+                        }
+                    }
+                }
+            }
+        },
+        "PartyInput": {
+            "type": "object",
+            "properties": {
+                "account_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "JSONAPISuccessObject": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "JSONAPIErrorObject": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "integer"
+                },
+                "code": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

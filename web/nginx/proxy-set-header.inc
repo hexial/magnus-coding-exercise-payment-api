@@ -1,0 +1,11 @@
+proxy_set_header	X-Forwarded-By		$server_addr:$server_port;
+proxy_set_header	X-Forwarded-For		$remote_addr;
+proxy_set_header	X-Forwarded-Proto	$scheme;
+proxy_set_header	Host 				$host;
+proxy_connect_timeout       300;
+proxy_send_timeout          300;
+proxy_read_timeout          300;
+send_timeout                300;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header Origin "";
+expires off;

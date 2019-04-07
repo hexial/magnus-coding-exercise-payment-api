@@ -1,0 +1,23 @@
+@startuml payment_deployment
+
+skinparam padding 10
+
+node "docker host" {
+    cloud frontend-net {
+        node "nginx" {
+            component reverseproxy
+        }
+        node "swagger-ui" {
+            component "Swagger UI"
+        }
+    }
+    cloud backend-net {
+        node "backend" {
+            component "backend (go)"
+        }
+        node "db" {
+            component "postgresql"
+        }
+    }
+}
+@enduml

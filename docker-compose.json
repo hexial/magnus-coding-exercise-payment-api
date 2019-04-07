@@ -1,0 +1,75 @@
+{
+    "version": "2.4",
+    "services": {
+        "web": {
+            "networks": [
+                "frontend"
+            ],
+            "container_name": "web",
+            "restart": "always",
+            "build": {
+                "context": "web"
+            },
+            "depends_on": [
+                "backend",
+                "swagger-ui"
+            ],
+            "ports": [
+                "80:80"
+            ]
+        },
+        "backend": {
+            "networks": [
+                "frontend",
+                "backend"
+            ],
+            "container_name": "backend",
+            "restart": "always",
+            "depends_on": [
+                "db"
+            ],
+            "build": {
+                "context": "backend"
+            },
+            "environment": [
+                "PORT=80",
+                "DB_HOST=db",
+                "DB_NAME=payment-api",
+                "DB_USER=backend",
+                "DB_PASSWORD=password"
+            ]
+        },
+        "swagger-ui": {
+            "networks": [
+                "frontend"
+            ],
+            "container_name": "swagger-ui",
+            "restart": "always",
+            "image": "swaggerapi/swagger-ui:v3.21.0",
+            "environment": [
+                "API_URL=http://localhost/api/swagger.json"
+            ]
+        },
+        "db": {
+            "networks": [
+                "backend"
+            ],
+            "container_name": "db",
+            "restart": "always",
+            "image": "postgres:10.7",
+            "environment": [
+                "POSTGRES_DB=payment-api",
+                "POSTGRES_USER=backend",
+                "POSTGRES_PASSWORD=password"
+            ],
+            "ports": [
+                "5432:5432"
+            ]
+        }
+    },
+    "networks": {
+        "backend": {},
+        "frontend": {}
+    },
+    "volumes": {}
+}

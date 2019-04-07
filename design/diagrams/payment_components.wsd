@@ -1,0 +1,16 @@
+@startuml payment_components
+package "Frontend" {
+    [nginx]
+    [swagger-ui]
+}
+package "Backend" {
+    [backend]
+    database "postgresql" {
+        [payment-api]
+    }
+}
+
+[nginx]-[backend]
+[nginx]-[swagger-ui]
+[backend]-[payment-api]
+@enduml

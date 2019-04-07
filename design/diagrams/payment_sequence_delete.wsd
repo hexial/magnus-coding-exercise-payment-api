@@ -1,0 +1,32 @@
+@startuml payment_sequence_delete
+
+actor Client
+database "PostgreSQL"
+
+Client -> "nginx": HTTP GET
+"nginx" -> "gin-gonic/gin": HTTP GET
+"gin-gonic/gin" -> "main.FakeAuthentication": gin.Context
+"main.FakeAuthentication" --> "gin-gonic/gin": OrganisationID
+"gin-gonic/gin" -> "payment.Handler": Delete(...)
+"payment.Handler" -> "payment.Resource": Delete(...)
+"payment.Resource" -> "storage.Payment": Delete(...)
+"storage.Payment" -> "gorm.io": tx.Exec(...)
+"gorm.io" -> "PostgreSQL": SQL
+"PostgreSQL" --> "gorm.io": Result
+"gorm.io" --> "storage.Payment": error
+"storage.Payment" --> "payment.Resource": error
+"payment.Resource" --> "payment.Handler": error
+"payment.Handler" --> "gin-gonic/gin": models.JSONAPISuccessObject
+"gin-gonic/gin" --> "nginx": HTTP 200 OK
+"nginx" --> Client: HTTP 200 OK
+
+participant Client order 10
+participant "nginx" order 15
+participant "gin-gonic/gin" order 20
+participant "main.FakeAuthentication" order 25
+participant "payment.Handler" order 30
+participant "payment.Resource" order 40
+participant "storage.Payment" order 50
+participant "gorm.io" order 60
+participant "PostgreSQL" order 70
+@enduml
